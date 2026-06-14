@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { background: #ffe4e6; font-family: 'Segoe UI', cursive; height: 100vh; margin: 0; overflow: hidden; }
+        .sorgu-baslik { text-align: center; font-size: 24px; color: #e11d48; font-weight: bold; padding: 20px; }
+        .main-panel { background: white; padding: 30px; border-radius: 25px; border: 3px solid #fda4af; width: 300px; margin: 50px auto; text-align: center; box-shadow: 0 10px 15px rgba(225, 29, 72, 0.1); }
+        
+        .modal { display: none; position: absolute; background: rgba(255, 228, 230, 0.5); z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; border: 3px solid #e11d48; width: 300px; text-align: center; box-shadow: 0 0 20px rgba(225, 29, 72, 0.2); }
+        
+        #can-bari { font-size: 25px; color: #e11d48; margin-bottom: 15px; }
+        button { background: #e11d48; color: white; border: none; padding: 12px 25px; margin: 5px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="sorgu-baslik" id="durum">Sorgulama Başladı...</div>
+
+<div class="main-panel" id="panel">
+    <h3 id="soru-metni">Adın ne?</h3>
+    <input type="text" id="kullanici-input" style="padding:10px; border-radius:10px; border:1px solid #fda4af;">
+    <button onclick="adimGec()">Devam Et</button>
+</div>
+
+<div id="loveModal" class="modal">
+    <div class="modal-content">
+        <div id="can-bari">❤️❤️❤️❤️</div>
+        <p id="modal-soru" style="font-weight:bold; color:#4c0519;"></p>
+        <button onclick="cevapVer(true)">Evet</button>
+        <button onclick="cevapVer(false)">Hayır</button>
+    </div>
+</div>
+
+<script>
+    let adim = 0; let sevgiliDeneme = 0; let can = 4; let soruIndex = 0;
+    let sorular = [
+        "Barışmak için çabaladığımı iddia ettiğim eski sevgilimle günde 5 cümle konuşurum.",
+        "Saatlerce yazmayıp yatarken iyi gecelerrrr bitanemmm yazarım.",
+        "Barışmak için çabaladığım eski sevgilimin neyi sevip sevmediğini bile bilmem.",
+        "Barışmak için çabaladığım eski sevgilimle hiçbir akşam vakit geçirmem onun yerine arkadaşlarımla oyun oynarım."
+    ];
+
+    function adimGec() {
+        if (adim === 0) {
+            let isim = document.getElementById("kullanici-input").value.toLowerCase();
+            if (isim !== "ıssızadam") {
+                alert("Hayır, ıssızadamucci olacaktı!");
+            }
+            document.getElementById("soru-metni").innerText = "Hazır mısın?";
+            document.getElementById("kullanici-input").value = "";
+            adim = 1;
+        } else if (adim === 1) {
+            let cevap = document.getElementById("kullanici-input").value.toLowerCase();
+            if (cevap === "evet" , "evt" && sevgiliDeneme === 0) {
+                alert("Tekrar düşün aşkım!");
+                sevgiliDeneme++;
+            } else if (cevap === "evet" , "evt" && sevgiliDeneme === 1) {
+                document.getElementById("panel").style.display = "none";
+                soruAc();
+            } else {
+                alert("Peki öyle olsun.");
+            }
+        }
+    }
+
+    function soruAc() {
+        let modal = document.getElementById("loveModal");
+        let randomTop = Math.floor(Math.random() * (window.innerHeight - 300));
+        let randomLeft = Math.floor(Math.random() * (window.innerWidth - 300));
+        modal.style.top = randomTop + "px";
+        modal.style.left = randomLeft + "px";
+        document.getElementById("modal-soru").innerText = sorular[soruIndex];
+        modal.style.display = "flex";
+    }
+
+    function cevapVer(isEvet) {
+        if (!isEvet) {
+            can--;
+            alert("Ah, yanıldın! Bir kalbin gitti.");
+            document.getElementById("can-bari").innerText = "❤️".repeat(can);
+        } else { 
+             can++;
+            alert("En azından kendini biliyorsun <3");
+            document.getElementById("can-bari").innerText = "❤️".repeat(can);
+        }
+
+        if (can <= 0) {
+            alert("Canın bitti!");
+            document.getElementById("loveModal").style.display = "none";
+            finalSorusunuGetir(); // Can bitse bile final sorusuna geç
+            
+        } else {
+            soruIndex++;
+            document.getElementById("loveModal").style.display = "none";
+            if (soruIndex < sorular.length) {
+                setTimeout(soruAc, 500);
+            } else {
+                finalSorusunuGetir();
+            }
+        }
+    }
+
+    function finalSorusunuGetir() {
+        document.getElementById("durum").innerText = "SON ADIM ❤️";
+        let body = document.querySelector('body');
+        body.innerHTML += `
+            <div class="main-panel">
+                <h3>AMACIN NE?</h3>
+                <input type="text" id="final-cevap" style="padding:10px; border-radius:10px; border:1px solid #fda4af;">
+                <button onclick="bitir()">Gönder</button>
+            </div>
+        `;
+    }
+
+    function bitir() {
+        let finalCevap = document.getElementById('final-cevap').value;
+        alert("Anlaşıldı: " + finalCevap);
+        location.reload();
+    }
+</script>
+</body>
+</html>
